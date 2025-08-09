@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pydantic → TypeScript — Light Prototype</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #f7f7fc;
+            --bg-2: #ffffff;
+            --surface: rgba(255, 255, 255, 0.8);
+            --surface-strong: rgba(255, 255, 255, 0.9);
+            --border: rgba(0, 0, 0, 0.08);
+            --white-10: rgba(0, 0, 0, 0.06);
+            --text: #1d163b;
+            --muted: #6e5fd6;
+            --muted-2: #6f6b86;
+            --primary: #7c3aed;
+            /* deep violet */
+            --primary-2: #6d28d9;
+            --accent-pink: #ff72e1;
+            --accent-cyan: #6bf1ff;
+            --success: #16a34a;
+            --warning: #b45309;
+            --danger: #e11d48;
+            --glow-purple: 0 0 0 1px rgba(124, 58, 237, 0.22), 0 0 24px rgba(124, 58, 237, 0.18), 0 0 64px rgba(124, 58, 237, 0.12);
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            color: var(--text);
+            background: radial-gradient(1200px 600px at 20% -10%, rgba(124, 58, 237, 0.10) 0%, transparent 60%),
+                radial-gradient(900px 600px at 80% -20%, rgba(236, 72, 153, 0.10) 0%, transparent 60%),
+                radial-gradient(1200px 800px at 50% 110%, rgba(56, 189, 248, 0.10) 0%, transparent 70%),
+                linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+            background-attachment: fixed;
+        }
+
+        /* soft vignette */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.08), inset 0 0 220px rgba(0, 0, 0, 0.06);
+            z-index: 0;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            max-width: 1220px;
+            margin: 0 auto;
+            padding: 32px 24px 120px;
+        }
+
+        /* header */
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.2px;
+        }
+
+        .logo {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: radial-gradient(60% 60% at 30% 30%, var(--accent-pink), transparent 70%),
+                radial-gradient(60% 60% at 70% 70%, var(--accent-cyan), transparent 70%),
+                linear-gradient(135deg, #f1ecff, #ffffff);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10), 0 0 18px rgba(124, 58, 237, 0.25) inset;
+        }
+
+        .brand h1 {
+            font-family: "Space Grotesk", Inter, sans-serif;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .brand h1 span {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            appearance: none;
+            border: 0;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-weight: 600;
+            color: var(--text);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: 180ms ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            border-color: rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-primary {
+            background: linear-gradient(120deg, var(--accent-pink), var(--primary));
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: var(--glow-purple);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.05);
+        }
+
+        /* icon sizing */
+        .btn .lucide {
+            width: 16px;
+            height: 16px;
+        }
+
+        .convert-btn .lucide {
+            width: 22px;
+            height: 22px;
+        }
+
+        .feature .icon .lucide {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* hero */
+        .hero {
+            display: grid;
+            gap: 14px;
+            padding: 44px 10px 6px;
+            text-align: center;
+        }
+
+        .kicker {
+            color: var(--muted);
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .title {
+            font-family: "Space Grotesk", Inter, sans-serif;
+            font-weight: 800;
+            font-size: clamp(28px, 4.6vw, 50px);
+            margin: 0;
+            line-height: 1.08;
+        }
+
+        .title .grad {
+            background: linear-gradient(90deg, #5a38a6, #7a5ef2 35%, #14b8a6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            color: var(--muted-2);
+            max-width: 760px;
+            margin: 6px auto 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* converter panel */
+        .panel {
+            margin-top: 34px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            pointer-events: none;
+            background: radial-gradient(600px 220px at 18% -10%, rgba(255, 114, 225, 0.12), transparent 60%),
+                radial-gradient(700px 260px at 82% -10%, rgba(107, 241, 255, 0.12), transparent 60%);
+            filter: blur(20px);
+        }
+
+        .panel-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 52px 1fr;
+            gap: 14px;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.75));
+            border-radius: var(--radius-md);
+            box-shadow: 0 6px 28px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--white-10);
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            color: #3a2b7a;
+        }
+
+        .pill {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #160f2c;
+            background: linear-gradient(120deg, var(--accent-cyan), var(--accent-pink));
+        }
+
+        textarea {
+            width: 100%;
+            height: 360px;
+            resize: vertical;
+            border: 0;
+            outline: none;
+            color: var(--text);
+            background: transparent;
+            padding: 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .divider {
+            display: grid;
+            place-items: center;
+            border: 1px dashed rgba(0, 0, 0, 0.12);
+            border-radius: 14px;
+            background: radial-gradient(100% 100% at 50% 0%, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.02));
+        }
+
+        .convert-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            background: linear-gradient(120deg, var(--accent-pink), var(--primary));
+            box-shadow: var(--glow-purple);
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 160ms ease-in-out;
+            transform: translateZ(0);
+        }
+
+        .convert-btn:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        /* features */
+        .features {
+            margin-top: 30px;
+            display: grid;
+            gap: 14px;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 1100px) {
+            .panel-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .divider {
+                height: 52px;
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 620px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            textarea {
+                height: 260px;
+            }
+        }
+
+        .feature {
+            position: relative;
+            padding: 18px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.75));
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, rgba(171, 113, 255, 0.9), rgba(107, 241, 255, 0.9));
+            color: #160f2c;
+            font-weight: 900;
+            box-shadow: 0 10px 18px rgba(124, 58, 237, 0.25);
+        }
+
+        .feature h4 {
+            margin: 4px 0 6px;
+            font-size: 16px;
+        }
+
+        .feature p {
+            margin: 0;
+            color: var(--muted-2);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* footer */
+        .footer {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            color: var(--muted-2);
+            font-size: 12px;
+            opacity: 0.95;
+        }
+
+        .footer .mini {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .footer .mini .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: linear-gradient(120deg, var(--accent-pink), var(--accent-cyan));
+            box-shadow: var(--glow-purple);
+        }
+
+        /* helper badges */
+        .badge {
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.03);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .kbd {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            padding: 2px 6px;
+            border-radius: 6px;
+            color: #1f1b2e;
+        }
+
+        /* small helper to make the textareas look lit */
+        .card textarea::placeholder {
+            color: rgba(16, 12, 28, 0.45);
+        }
+
+        .card:focus-within {
+            box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.28), 0 0 0 4px rgba(124, 58, 237, 0.12), 0 0 40px rgba(124, 58, 237, 0.15) inset;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <header class="nav">
+            <div class="brand">
+                <div class="logo" aria-hidden="true"></div>
+                <h1>Py<span>→</span>TS</h1>
+            </div>
+            <div class="nav-actions">
+                <span class="badge" title="Client-side only">
+                    <span class="dot"
+                        style="width:8px;height:8px;border-radius:999px;background:radial-gradient(circle at 40% 40%, var(--success), transparent 70%);"></span>
+                    Private & Client‑Side
+                </span>
+                <button class="btn" id="themeBtn"><i data-lucide="moon" aria-hidden="true"></i><span>Dark
+                        Theme</span></button>
+                <button class="btn" id="coffeeBtn"><i data-lucide="coffee" aria-hidden="true"></i><span>Buy me
+                        a coffee</span></button>
+                <button class="btn btn-primary" onclick="window.open('https://github.com','_blank')"><i
+                        data-lucide="github" aria-hidden="true"></i><span>GitHub</span></button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <span class="kicker">Pydantic → TypeScript</span>
+            <h2 class="title">Smart, Glassy UI for <span class="grad">Everyday Conversions</span></h2>
+            <p class="subtitle">Convert Python Pydantic models into TypeScript interfaces with a crisp,
+                light‑glass look. Supports nested models, enums, and datetime types. This is a visual
+                prototype
+                only.</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-inner">
+                <article class="card">
+                    <div class="card-header">
+                        <h3>Pydantic Models</h3>
+                        <div class="actions">
+                            <button class="btn" id="exampleBtn"><i data-lucide="file-code-2"
+                                    aria-hidden="true"></i><span>Load Example</span></button>
+                        </div>
+                    </div>
+                    <textarea id="pyInput" placeholder="# Paste your Pydantic models here"></textarea>
+                </article>
+
+                <div class="divider">
+                    <button id="convertBtn" class="convert-btn" title="Convert" aria-label="Convert"><i
+                            data-lucide="arrow-right" aria-hidden="true"></i></button>
+                </div>
+
+                <article class="card">
+                    <div class="card-header">
+                        <h3>TypeScript Types</h3>
+                        <div class="actions">
+                            <button class="btn" id="copyBtn"><i data-lucide="copy"
+                                    aria-hidden="true"></i><span>Copy</span></button>
+                        </div>
+                    </div>
+                    <textarea id="tsOutput" placeholder="TypeScript output will appear here"
+                        readonly></textarea>
+                </article>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature">
+                <div class="icon"><i data-lucide="layers-3" aria-hidden="true"></i></div>
+                <h4>Nested Models</h4>
+                <p>Supports complex nested structures and maintains proper type relationships between models.
+                </p>
+            </div>
+            <div class="feature">
+                <div class="icon"><i data-lucide="clock" aria-hidden="true"></i></div>
+                <h4>DateTime Support</h4>
+                <p>Converts datetime, date, and time types to appropriate TypeScript string representations.
+                </p>
+            </div>
+            <div class="feature">
+                <div class="icon"><i data-lucide="list" aria-hidden="true"></i></div>
+                <h4>Enum Conversion</h4>
+                <p>Handles both string and numeric enums with proper TypeScript enum syntax.</p>
+            </div>
+            <div class="feature">
+                <div class="icon"><i data-lucide="shield" aria-hidden="true"></i></div>
+                <h4>Client‑Side</h4>
+                <p>All processing happens in your browser — no server required, completely private.</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="mini"><span class="dot"></span> Prototype UI • Light glass styling inspired by modern
+                AI landing pages</div>
+            <div class="mini">Tip: Press <span class="kbd">Ctrl</span> + <span class="kbd">Enter</span> to
+                convert</div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        const pyInput = document.getElementById('pyInput');
+        const tsOutput = document.getElementById('tsOutput');
+        const exampleBtn = document.getElementById('exampleBtn');
+        const convertBtn = document.getElementById('convertBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const coffeeBtn = document.getElementById('coffeeBtn');
+        const themeBtn = document.getElementById('themeBtn');
+        const copyBtnLabel = copyBtn ? copyBtn.querySelector('span') : null;
+
+        const example = `from pydantic import BaseModel
+from typing import Optional, List
+from enum import Enum
+from datetime import datetime
+
+class Status(str, Enum):
+    ACTIVE = "active"
+    INACTIVE = "inactive"
+
+class Profile(BaseModel):
+    bio: Optional[str] = None
+    website: Optional[str] = None
+
+class User(BaseModel):
+    id: int
+    name: str
+    email: Optional[str] = None
+    status: Status = Status.ACTIVE
+    tags: List[str] = []
+    created_at: datetime
+    profile: Optional[Profile] = None
+`;
+
+        exampleBtn.addEventListener('click', () => {
+            pyInput.value = example;
+            tsOutput.value = '';
+            pyInput.focus();
+        });
+
+        function mockConvert(py) {
+            // This is intentionally a VERY naive, demo-only transformation to simulate output
+            // for the prototype. It is not a real Pydantic parser.
+            const lines = py.split(/\r?\n/);
+            const interfaces = [];
+            let current = null;
+
+            function tsType(pyType) {
+                if (!pyType) return 'any';
+                let t = pyType.trim();
+                t = t.replace(/^Optional\[(.*)\]$/, '$1 | null');
+                t = t.replace(/^List\[(.*)\]$/, '$1[]');
+                const map = {
+                    int: 'number', float: 'number', bool: 'boolean', str: 'string',
+                    datetime: 'string', date: 'string', time: 'string', Any: 'any'
+                };
+                return map[t] || t;
+            }
+
+            const enumDefs = new Map();
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const enumMatch = /^class\s+(\w+)\((?:str\s*,\s*)?Enum\)\s*:\s*/.exec(line);
+                if (enumMatch) {
+                    const name = enumMatch[1];
+                    const values = [];
+                    i++;
+                    while (i < lines.length && /^\s+\w+\s*=/.test(lines[i])) {
+                        const [, key, value] = lines[i].match(/^\s+(\w+)\s*=\s*(.*)$/) || [];
+                        if (key) {
+                            const v = value.includes('"') || value.includes('\'') ? value.trim() : `"${key.toLowerCase()}"`;
+                            values.push(`${key} = ${v}`);
+                        }
+                        i++;
+                    }
+                    i--; // step back one because the for-loop will i++
+                    enumDefs.set(name, `export enum ${name} {\n  ${values.join(',\n  ')}\n}`);
+                    continue;
+                }
+
+                const cls = /^class\s+(\w+)\(BaseModel\)\s*:\s*/.exec(line);
+                if (cls) {
+                    if (current) interfaces.push(current);
+                    current = { name: cls[1], fields: [] };
+                    continue;
+                }
+
+                const field = /^\s*(\w+)\s*:\s*([^=\n]+)(?:=.*)?$/.exec(line);
+                if (current && field) {
+                    const [, fname, ftype] = field;
+                    current.fields.push({ name: fname, type: tsType(ftype) });
+                }
+            }
+
+            if (current) interfaces.push(current);
+
+            const tsParts = [];
+            enumDefs.forEach(v => tsParts.push(v));
+            interfaces.forEach(iface => {
+                tsParts.push(`export interface ${iface.name} {\n` + iface.fields.map(f => `  ${f.name}: ${f.type};`).join('\n') + `\n}`);
+            });
+
+            return tsParts.join('\n\n');
+        }
+
+        function runConvert() {
+            const py = pyInput.value.trim();
+            if (!py) {
+                tsOutput.value = '// Provide Pydantic models in the left panel and click Convert.';
+                return;
+            }
+            tsOutput.value = mockConvert(py);
+        }
+
+        convertBtn.addEventListener('click', runConvert);
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'enter') runConvert();
+        });
+
+        copyBtn.addEventListener('click', async () => {
+            if (!tsOutput.value) return;
+            try {
+                await navigator.clipboard.writeText(tsOutput.value);
+                if (copyBtnLabel) {
+                    const original = copyBtnLabel.textContent;
+                    copyBtnLabel.textContent = 'Copied';
+                    setTimeout(() => copyBtnLabel.textContent = original || 'Copy', 1200);
+                }
+            } catch { }
+        });
+
+        coffeeBtn?.addEventListener('click', () => {
+            window.open('https://www.buymeacoffee.com/', '_blank');
+        });
+
+        themeBtn?.addEventListener('click', () => {
+            window.location.href = 'final-prototype.html';
+        });
+
+        // Initialize Lucide icons
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+            window.lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>
