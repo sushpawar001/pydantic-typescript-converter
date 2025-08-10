@@ -1,0 +1,887 @@
+@import "tailwindcss";
+
+/* Prototype parity styles */
+:root {
+  --bg: #0c0a13;
+  --bg-2: #0f0b1d;
+  --border: rgba(255, 255, 255, 0.12);
+  --text: #efeaff;
+}
+
+.theme-light {
+  --bg: #f7f7fc;
+  --bg-2: #ffffff;
+  --border: rgba(0, 0, 0, 0.08);
+  --text: #1d163b;
+}
+
+/* Themed scrollbars (global) */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: rgba(162, 118, 255, 0.75) rgba(255, 255, 255, 0.08);
+}
+
+html.theme-light * {
+  scrollbar-color: rgba(124, 58, 237, 0.8) rgba(0, 0, 0, 0.08);
+}
+
+/* WebKit (Chromium, Safari, Edge) */
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+html.theme-light *::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #a276ff, #6bf1ff);
+  border: 3px solid transparent;
+  /* creates nice rounded gap around thumb */
+  background-clip: padding-box;
+  box-shadow: 0 2px 12px rgba(162, 118, 255, 0.35);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  filter: brightness(1.08);
+}
+
+html.theme-light *::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c3aed, #14b8a6);
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.25);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #2a1857 0%, transparent 60%),
+    radial-gradient(900px 600px at 80% -20%, #4f1b5f 0%, transparent 60%),
+    radial-gradient(1200px 800px at 50% 110%, #251a55 0%, transparent 70%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-attachment: fixed;
+}
+
+html.theme-light body {
+  /* Softer, theme-matched glow field for light mode */
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(124, 58, 237, 0.18) 0%, rgba(124, 58, 237, 0.08) 35%, transparent 65%),
+    radial-gradient(1000px 600px at 85% -15%, rgba(236, 72, 153, 0.16) 0%, rgba(236, 72, 153, 0.06) 40%, transparent 70%),
+    radial-gradient(1400px 900px at 50% 115%, rgba(20, 184, 166, 0.18) 0%, rgba(20, 184, 166, 0.08) 45%, transparent 75%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 60%, #f3f7ff 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.65), inset 0 0 260px rgba(0, 0, 0, 0.35);
+}
+
+html.theme-light body::before {
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.08), inset 0 0 220px rgba(0, 0, 0, 0.06);
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 32px) clamp(12px, 3vw, 24px) clamp(80px, 10vw, 120px);
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(8px, 1.6vw, 14px) clamp(10px, 2vw, 14px);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+}
+
+html.theme-light .nav {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(6px, 1.2vw, 10px);
+  letter-spacing: 0.2px;
+}
+
+.logo {
+  width: clamp(26px, 3.2vw, 32px);
+  height: clamp(26px, 3.2vw, 32px);
+  border-radius: 10px;
+  background: radial-gradient(60% 60% at 30% 30%, #ff72e1, transparent 70%), radial-gradient(60% 60% at 70% 70%, #6bf1ff, transparent 70%), linear-gradient(135deg, #2a1f4a, #1a1531);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 18px rgba(171, 113, 255, 0.45) inset;
+}
+
+html.theme-light .logo {
+  background: radial-gradient(60% 60% at 30% 30%, #ff72e1, transparent 70%), radial-gradient(60% 60% at 70% 70%, #6bf1ff, transparent 70%), linear-gradient(135deg, #f1ecff, #ffffff);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10), 0 0 18px rgba(124, 58, 237, 0.25) inset;
+}
+
+.brand h1 {
+  font-family: var(--font-heading), var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans";
+  font-size: clamp(16px, 1.6vw, 18px);
+  margin: 0;
+}
+
+.brand h1 span {
+  color: #a276ff;
+}
+
+html.theme-light .brand h1 span {
+  color: #7c3aed;
+}
+
+.nav-actions {
+  display: flex;
+  gap: clamp(6px, 1vw, 8px);
+  align-items: center;
+  /* Ensure actions stay on the far right when the toggle is hidden on large screens */
+  grid-column: 3;
+  justify-self: end;
+}
+
+/* Mobile-first nav layout */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  color: var(--text);
+}
+
+.nav-toggle .lucide,
+.nav-toggle svg.lucide {
+  width: 18px;
+  height: 18px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Default: collapse actions on narrow screens */
+@media (max-width: 760px) {
+  .nav {
+    grid-template-columns: auto auto;
+    grid-template-areas:
+      "brand toggle"
+      "actions actions";
+    align-items: center;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .nav-toggle {
+    grid-area: toggle;
+    justify-self: end;
+    display: inline-flex;
+  }
+
+  .nav-actions {
+    grid-area: actions;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    display: none;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  .nav.is-open .nav-actions {
+    display: flex;
+  }
+}
+
+/* Match prototype icon sizing inside buttons to reduce nav height */
+.btn .lucide,
+.btn svg.lucide {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+.nav-actions .badge .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 40% 40%, #63f7a1, transparent 70%);
+}
+
+html.theme-light .nav-actions .badge .dot {
+  background: radial-gradient(circle at 40% 40%, #16a34a, transparent 70%);
+}
+
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: 180ms ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+html.theme-light .btn {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #ff72e1, #7c3aed);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 0 1px rgba(162, 118, 255, 0.4), 0 0 24px rgba(162, 118, 255, 0.28), 0 0 64px rgba(162, 118, 255, 0.18);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.08);
+}
+
+html.theme-light .btn-primary {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #ffffff;
+  /* Ensure primary keeps its gradient in light mode (was overridden by html.theme-light .btn) */
+  background: linear-gradient(120deg, #ff72e1, #7c3aed);
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.22), 0 0 24px rgba(124, 58, 237, 0.18), 0 0 64px rgba(124, 58, 237, 0.12);
+}
+
+/* Compact button variant */
+.btn-sm {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.btn-sm .lucide,
+.btn-sm svg.lucide {
+  width: 14px;
+  height: 14px;
+}
+
+/* Prototype badge styling for compact look */
+.badge {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 12px;
+  color: #b7a8ff;
+}
+
+html.theme-light .badge {
+  background: rgba(0, 0, 0, 0.02);
+  color: #6e5fd6;
+}
+
+.hero {
+  display: grid;
+  gap: 14px;
+  padding: 44px 10px 6px;
+  text-align: center;
+}
+
+.kicker {
+  color: #b7a8ff;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+html.theme-light .kicker {
+  color: #6e5fd6;
+}
+
+.title {
+  font-family: var(--font-heading), var(--font-body), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans";
+  font-weight: 800;
+  font-size: clamp(28px, 4.6vw, 50px);
+  margin: 0;
+  line-height: 1.08;
+}
+
+.title .grad {
+  background: linear-gradient(90deg, #e6cbff, #c8b3ff 35%, #b3f4ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.theme-light .title .grad {
+  background: linear-gradient(90deg, #5a38a6, #7a5ef2 35%, #14b8a6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: rgba(183, 168, 255, 0.85);
+  max-width: 760px;
+  margin: 6px auto 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+html.theme-light .subtitle {
+  color: #6f6b86;
+}
+
+.panel {
+  margin-top: 34px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+html.theme-light .panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.55));
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: radial-gradient(600px 220px at 18% -10%, rgba(255, 114, 225, 0.12), transparent 60%), radial-gradient(700px 260px at 82% -10%, rgba(107, 241, 255, 0.12), transparent 60%);
+  filter: blur(20px);
+}
+
+.panel-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+/* Allow grid children to shrink evenly; prevents second column from collapsing */
+.panel-inner>.card {
+  min-width: 0;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: linear-gradient(180deg, rgba(22, 16, 36, 0.55), rgba(22, 16, 36, 0.3));
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html.theme-light .card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.75));
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 0;
+}
+
+html.theme-light .card-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  color: #decfff;
+}
+
+html.theme-light .card-header h3 {
+  color: #3a2b7a;
+}
+
+.pill {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #170f2c;
+  background: linear-gradient(120deg, #6bf1ff, #ff72e1);
+}
+
+textarea {
+  width: 100%;
+  height: 360px;
+  resize: vertical;
+  border: 0;
+  outline: none;
+  color: var(--text);
+  background: transparent;
+  padding: 16px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* Match output code block height to input */
+.codeblock {
+  width: 100%;
+  height: 360px;
+  padding: 16px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* Improve code color contrast in light mode without adding a dark bg */
+html.theme-light .codeblock {
+  background: transparent;
+  color: #1d163b;
+}
+
+/* Ensure form controls don't enforce intrinsic min-content width in grid */
+.card textarea {
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* Removed divider and convert button styles as not used anymore */
+
+.features {
+  margin-top: 30px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width:1100px) {
+  .panel-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .features {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width:620px) {
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  textarea {
+    height: 260px;
+  }
+
+  .codeblock {
+    height: 260px;
+  }
+
+  /* Match editor height to output/input on small screens */
+  .code-editor {
+    min-height: 260px;
+  }
+}
+
+/* Prism token colors - dark theme (transparent background, match brand) */
+.codeblock .token.comment,
+.code-editor .token.comment,
+.codeblock .token.prolog,
+.code-editor .token.prolog,
+.codeblock .token.doctype,
+.code-editor .token.doctype,
+.codeblock .token.cdata,
+.code-editor .token.cdata {
+  color: rgba(236, 227, 255, 0.45);
+  font-style: italic;
+}
+
+.codeblock .token.punctuation,
+.code-editor .token.punctuation {
+  color: var(--text);
+}
+
+.codeblock .token.property,
+.code-editor .token.property,
+.codeblock .token.tag,
+.code-editor .token.tag,
+.codeblock .token.boolean,
+.code-editor .token.boolean,
+.codeblock .token.number,
+.code-editor .token.number,
+.codeblock .token.constant,
+.code-editor .token.constant,
+.codeblock .token.symbol,
+.code-editor .token.symbol,
+.codeblock .token.deleted,
+.code-editor .token.deleted {
+  color: #ff72e1;
+}
+
+.codeblock .token.selector,
+.code-editor .token.selector,
+.codeblock .token.attr-name,
+.code-editor .token.attr-name,
+.codeblock .token.string,
+.code-editor .token.string,
+.codeblock .token.char,
+.code-editor .token.char,
+.codeblock .token.builtin,
+.code-editor .token.builtin,
+.codeblock .token.inserted,
+.code-editor .token.inserted {
+  color: #6bf1ff;
+}
+
+.codeblock .token.operator,
+.code-editor .token.operator,
+.codeblock .token.entity,
+.code-editor .token.entity,
+.codeblock .token.url,
+.code-editor .token.url,
+.codeblock .language-css .token.string,
+.code-editor .language-css .token.string,
+.style .token.string {
+  color: #a276ff;
+}
+
+.codeblock .token.atrule,
+.code-editor .token.atrule,
+.codeblock .token.attr-value,
+.code-editor .token.attr-value,
+.codeblock .token.keyword,
+.code-editor .token.keyword {
+  color: #a276ff;
+}
+
+.codeblock .token.function,
+.code-editor .token.function,
+.codeblock .token.class-name,
+.code-editor .token.class-name {
+  color: #b3f4ff;
+}
+
+.codeblock .token.regex,
+.code-editor .token.regex,
+.codeblock .token.important,
+.code-editor .token.important,
+.codeblock .token.variable,
+.code-editor .token.variable {
+  color: #ff72e1;
+}
+
+.codeblock .token.bold,
+.code-editor .token.bold {
+  font-weight: bold;
+}
+
+.codeblock .token.italic,
+.code-editor .token.italic {
+  font-style: italic;
+}
+
+/* Prism token colors - light theme */
+html.theme-light .codeblock .token.comment,
+html.theme-light .code-editor .token.comment,
+html.theme-light .codeblock .token.prolog,
+html.theme-light .code-editor .token.prolog,
+html.theme-light .codeblock .token.doctype,
+html.theme-light .code-editor .token.doctype,
+html.theme-light .codeblock .token.cdata,
+html.theme-light .code-editor .token.cdata {
+  color: #6f6b86;
+}
+
+html.theme-light .codeblock .token.punctuation,
+html.theme-light .code-editor .token.punctuation {
+  color: #1d163b;
+}
+
+html.theme-light .codeblock .token.property,
+html.theme-light .code-editor .token.property,
+html.theme-light .codeblock .token.tag,
+html.theme-light .code-editor .token.tag,
+html.theme-light .codeblock .token.boolean,
+html.theme-light .code-editor .token.boolean,
+html.theme-light .codeblock .token.number,
+html.theme-light .code-editor .token.number,
+html.theme-light .codeblock .token.constant,
+html.theme-light .code-editor .token.constant,
+html.theme-light .codeblock .token.symbol,
+html.theme-light .code-editor .token.symbol,
+html.theme-light .codeblock .token.deleted,
+html.theme-light .code-editor .token.deleted {
+  color: #ec4899;
+}
+
+html.theme-light .codeblock .token.selector,
+html.theme-light .code-editor .token.selector,
+html.theme-light .codeblock .token.attr-name,
+html.theme-light .code-editor .token.attr-name,
+html.theme-light .codeblock .token.string,
+html.theme-light .code-editor .token.string,
+html.theme-light .codeblock .token.char,
+html.theme-light .code-editor .token.char,
+html.theme-light .codeblock .token.builtin,
+html.theme-light .code-editor .token.builtin,
+html.theme-light .codeblock .token.inserted,
+html.theme-light .code-editor .token.inserted {
+  color: #14b8a6;
+}
+
+html.theme-light .codeblock .token.operator,
+html.theme-light .code-editor .token.operator,
+html.theme-light .codeblock .token.entity,
+html.theme-light .code-editor .token.entity,
+html.theme-light .codeblock .token.url,
+html.theme-light .code-editor .token.url,
+html.theme-light .language-css .token.string,
+html.theme-light .code-editor .language-css .token.string,
+html.theme-light .style .token.string {
+  color: #7c3aed;
+}
+
+html.theme-light .codeblock .token.atrule,
+html.theme-light .code-editor .token.atrule,
+html.theme-light .codeblock .token.attr-value,
+html.theme-light .code-editor .token.attr-value,
+html.theme-light .codeblock .token.keyword,
+html.theme-light .code-editor .token.keyword {
+  color: #7c3aed;
+}
+
+html.theme-light .codeblock .token.function,
+html.theme-light .code-editor .token.function,
+html.theme-light .codeblock .token.class-name,
+html.theme-light .code-editor .token.class-name {
+  color: #2563eb;
+}
+
+.feature {
+  position: relative;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+html.theme-light .feature {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.75));
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.feature .icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, rgba(171, 113, 255, 0.9), rgba(107, 241, 255, 0.9));
+  color: #160f2c;
+  font-weight: 900;
+  box-shadow: 0 10px 26px rgba(162, 118, 255, 0.35);
+}
+
+html.theme-light .feature .icon {
+  box-shadow: 0 10px 18px rgba(124, 58, 237, 0.25);
+}
+
+.feature h4 {
+  margin: 4px 0 6px;
+  font-size: 16px;
+}
+
+.feature p {
+  margin: 0;
+  color: rgba(236, 227, 255, 0.75);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+html.theme-light .feature p {
+  color: #6f6b86;
+}
+
+.footer {
+  margin-top: clamp(40px, 8vw, 60px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: clamp(10px, 2vw, 16px);
+  color: #b7a8ff;
+  font-size: clamp(11px, 1.4vw, 12px);
+  opacity: 0.9;
+}
+
+html.theme-light .footer {
+  color: #6f6b86;
+  opacity: 0.95;
+}
+
+.footer .mini {
+  display: flex;
+  gap: clamp(8px, 1.6vw, 10px);
+  align-items: center;
+}
+
+.footer .mini .dot {
+  width: clamp(5px, 0.8vw, 6px);
+  height: clamp(5px, 0.8vw, 6px);
+  border-radius: 999px;
+  background: linear-gradient(120deg, #ff72e1, #6bf1ff);
+  box-shadow: 0 0 0 1px rgba(162, 118, 255, 0.4), 0 0 24px rgba(162, 118, 255, 0.28), 0 0 64px rgba(162, 118, 255, 0.18);
+}
+
+/* Modal theming */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+html.theme-light .modal-backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.modal-card {
+  border: 1px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+
+html.theme-light .modal-card {
+  background: var(--bg-2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04) inset;
+}
+
+/* UPI badge: theme-aware for strong contrast */
+.badge-upi {
+  background: rgba(16, 185, 129, 0.22);
+  /* emerald-500 ~ 16,185,129 */
+  color: #d1fae5;
+  /* emerald-100 text on dark */
+  border: 1px solid rgba(16, 185, 129, 0.32);
+}
+
+html.theme-light .badge-upi {
+  background: rgba(16, 185, 129, 0.16);
+  color: #065f46;
+  /* emerald-800 for legibility on light */
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* Keycap styling used in footer tips */
+.kbd {
+  display: inline-block;
+  padding: clamp(1px, 0.4vw, 2px) clamp(4px, 0.8vw, 6px);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.95em;
+}
+
+html.theme-light .kbd {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.01));
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Footer responsive layout */
+@media (max-width: 760px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer .mini {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

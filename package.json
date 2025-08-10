@@ -1,0 +1,42 @@
+{
+  "name": "ts-pydantic-converter",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@next/third-parties": "15.4.6",
+    "lucide-react": "^0.539.0",
+    "next": "15.4.6",
+    "next-themes": "^0.4.6",
+    "prismjs": "^1.30.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-simple-code-editor": "^0.14.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6",
+    "@testing-library/react": "^16",
+    "@testing-library/user-event": "^14",
+    "@types/node": "^20",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^2",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.6",
+    "jsdom": "^25",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^2"
+  }
+}
